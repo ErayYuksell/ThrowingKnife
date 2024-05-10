@@ -8,6 +8,7 @@ TagManager:
   - Final
   - KnifeTip
   - KnifeHandle
+  - Block
   layers:
   - Default
   - TransparentFX

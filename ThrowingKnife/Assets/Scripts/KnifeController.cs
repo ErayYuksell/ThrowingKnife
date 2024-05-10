@@ -42,7 +42,7 @@ public class KnifeController : MonoBehaviour
             targetDone = true;
             GameManager.instance.KnifeStabbed();
         }
-        else if (other.CompareTag("Arrival"))
+        else if (other.CompareTag("Final"))
         {
             transform.SetPositionAndRotation(other.transform.position, other.transform.rotation);
             targetDone = true;

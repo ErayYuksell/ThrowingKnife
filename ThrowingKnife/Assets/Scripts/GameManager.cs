@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -20,6 +21,15 @@ public class GameManager : MonoBehaviour
     bool isGameDone;
     int knifePoolIndex;
     float currentYPosition = 0.75f;
+
+    [SerializeField] CameraController cameraController;
+    [SerializeField] MainBallController mainBallController;
+
+    TimeSpan time;
+    [SerializeField] TextMeshProUGUI countDownTime;
+    public int duration;
+
+
     private void Awake()
     {
         if (instance == null)
@@ -33,10 +43,11 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        knifes[knifePoolIndex].transform.position = new Vector3(2.5f,currentYPosition,0);
+        knifes[knifePoolIndex].transform.position = new Vector3(2.5f, currentYPosition, 0);
         knifes[knifePoolIndex].SetActive(true);
+        StartCoroutine(CountDown());
     }
-   
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && !isGameDone)
@@ -69,12 +80,52 @@ public class GameManager : MonoBehaviour
         //    }
         //}
     }
+
+    IEnumerator CountDown()
+    {
+        time = TimeSpan.FromSeconds(duration);
+        countDownTime.text = time.ToString(@"mm\:ss");
+
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+
+            if (duration != 0)
+            {
+                duration--;
+                time = TimeSpan.FromSeconds(duration);
+                countDownTime.text = time.ToString(@"mm\:ss");
+
+                if (duration == 0)
+                {
+                    Lose("timeDone");
+                    yield break;
+                }
+            }
+        }
+    }
     public void KnifeStabbed()
     {
         blocks[knifePoolIndex - 1].knifeHole.SetActive(true);
+        cameraController.targets[0] = blocks[knifePoolIndex - 1].block.transform;
     }
     public void WinWin()
     {
-
+        mainBallController.gameObject.SetActive(false);
     }
+    public void Lose(string state = "ballExploded")
+    {
+        isGameDone = true;
+        knifes[knifePoolIndex].SetActive(false);
+
+        countDownTime.gameObject.SetActive(false);
+        StopAllCoroutines();
+
+        if (state == "timeDone")
+        {
+            mainBallController.gameObject.SetActive(false);
+        }
+    }
+
+   
 }
