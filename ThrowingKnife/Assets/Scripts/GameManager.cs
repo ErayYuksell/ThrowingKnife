@@ -29,6 +29,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI countDownTime;
     public int duration;
 
+    int seriesShotNumber;
+    [SerializeField] TextMeshProUGUI seriesText;
+    int numberOfSeries;
+
 
     private void Awake()
     {
@@ -108,10 +112,28 @@ public class GameManager : MonoBehaviour
     {
         blocks[knifePoolIndex - 1].knifeHole.SetActive(true);
         cameraController.targets[0] = blocks[knifePoolIndex - 1].block.transform;
+
+        seriesShotNumber++;
+        seriesText.text = seriesShotNumber.ToString();
+
+        if (!seriesText.isActiveAndEnabled && !isGameDone)
+        {
+            seriesText.gameObject.SetActive(true);
+            numberOfSeries++;
+        }
+    }
+    public void SeriesDone()
+    {
+        seriesShotNumber = 0;
+        seriesText.gameObject.SetActive(false);
     }
     public void WinWin()
     {
         mainBallController.gameObject.SetActive(false);
+
+        countDownTime.gameObject.SetActive(false);
+        seriesText.gameObject.SetActive(false);
+        StopAllCoroutines();
     }
     public void Lose(string state = "ballExploded")
     {
@@ -121,11 +143,15 @@ public class GameManager : MonoBehaviour
         countDownTime.gameObject.SetActive(false);
         StopAllCoroutines();
 
+        seriesShotNumber = 0;
+        seriesText.gameObject.SetActive(false);
+
+
         if (state == "timeDone")
         {
             mainBallController.gameObject.SetActive(false);
         }
     }
-
+    
    
 }

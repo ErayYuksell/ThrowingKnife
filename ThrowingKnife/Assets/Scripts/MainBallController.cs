@@ -14,6 +14,7 @@ public class MainBallController : MonoBehaviour
         {
             rb.velocity = Vector3.zero;
             rb.AddForce(0, Random.Range(2, 4), 0, ForceMode.Impulse);
+            GameManager.instance.SeriesDone();
         }
         else if (other.CompareTag("KnifeTip"))
         {
